@@ -16,12 +16,13 @@ public class NewPlayer : MonoBehaviour
     [SerializeField] private bool onPlatform;
 
     [Header("Move")]
-    [SerializeField] private float Speed = 5f;
+    public float Speed = 5f;
     [SerializeField] private float Hdirection;
     [SerializeField] private float Vdirection;
     [SerializeField] private Vector2 MoveVector;
     private bool faceRight = true;
     private bool faceNow;
+    public float SpeedChange;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce = 10f;
@@ -34,12 +35,9 @@ public class NewPlayer : MonoBehaviour
     private int normalLayer = 11;
     private int fallLayer = 12;
 
-    [Header("Stealth")]
-    [SerializeField] private float stealthSpeed = 2f;
-    [SerializeField] private bool toStealth = false; // 按键来翻转它，控制是否进入潜行状态
-    [SerializeField] private bool canStealth; // 判断是否在潜行区域内
-    public LayerMask StealthArea;
-    public Transform StealthCheck;
+  
+
+    
 
     [Header("Dash")]
     [SerializeField] private bool canDash = true; // 是否可以冲刺
@@ -49,6 +47,10 @@ public class NewPlayer : MonoBehaviour
     [SerializeField] private float dashCooldown = 2f; //冲刺的冷却时间
     [SerializeField] private TrailRenderer dashTrail;
     private float DashDir;
+
+
+ 
+
 
     [Header("Interactive")]
     private bool onDoor;
@@ -63,8 +65,10 @@ public class NewPlayer : MonoBehaviour
         playerInput.onMove += Move;
         playerInput.onStopMove += StopMove;
         playerInput.onJump += Jump;
-        playerInput.onStealth += Stealth;
+        //playerInput.onStealth += Stealth;
         playerInput.onDash += toDash;
+        //playerInput.StartShoot += ShootStart;
+        //playerInput.EndShoot += ShootEnd;
         playerInput.onInteract += Interact;
     }
     void OnDisable()
@@ -72,15 +76,18 @@ public class NewPlayer : MonoBehaviour
         playerInput.onMove -= Move;
         playerInput.onStopMove -= StopMove;
         playerInput.onJump -= Jump;
-        playerInput.onStealth -= Stealth;
+        //playerInput.onStealth -= Stealth;
         playerInput.onDash -= toDash;
         playerInput.onInteract -= Interact;
+        //playerInput.StartShoot -= ShootStart;
+        //playerInput.EndShoot -= ShootEnd;
     }
     // Start is called before the first frame update
     void Start()
     {
         RB = GetComponent<Rigidbody2D>();
         playerInput.EnableGameplayInput();
+       
     }
 
     void Update()
@@ -88,7 +95,9 @@ public class NewPlayer : MonoBehaviour
         // Position Maintainance
         onGround = Physics2D.OverlapCircle(groundCheck.position, .05f, ground) || Physics2D.OverlapCircle(groundCheck.position, .05f, platform);
         onPlatform = !Physics2D.OverlapCircle(groundCheck.position, .05f, ground) && Physics2D.OverlapCircle(groundCheck.position, .05f, platform);
-        canStealth = Physics2D.OverlapCircle(StealthCheck.position, .05f, StealthArea);
+       
+        // Start shooting time counting
+        //Timer();
         // Animation
         Anim.SetFloat("SpeedY", RB.velocity.y);
         Anim.SetBool("onGround", onGround);
@@ -123,6 +132,7 @@ public class NewPlayer : MonoBehaviour
         {
             return;
         }
+        
         // Continue Moving
         RB.velocity = new Vector2(Hdirection * Speed, RB.velocity.y);
     }
@@ -247,15 +257,9 @@ public class NewPlayer : MonoBehaviour
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
     }
+ 
+ 
 
-
-    void Stealth()
-    {
-        if (!onGround || !canStealth)
-            return;
-        toStealth = !toStealth; // 点按切换
-        // TODO
-    }
 
     // HotKey:F
     void Interact()
