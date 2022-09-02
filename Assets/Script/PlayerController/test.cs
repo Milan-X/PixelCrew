@@ -28,14 +28,15 @@ public class test : MonoBehaviour
 
     [Header("Shoot")]
     public GameObject BulletTiles1;
-    public Transform Firepoint;
-
-    
+    public Transform Firepoint;  
     private bool canShoot;
 
 
     [Header("ChargeShoot")]
     public GameObject ChargedBullet;
+
+    [Header("ShootTimer")]
+    private float shoot_Timer;
     // Start is called before the first frame update
 
 
@@ -59,7 +60,7 @@ public class test : MonoBehaviour
     void Update()
     {
         canStealth = Physics2D.OverlapCircle(StealthCheck.position, .05f, StealthArea);
-        
+        ShootTimer();
         if (!canStealth)
         {
             toStealth = false;
@@ -141,8 +142,22 @@ public class test : MonoBehaviour
     }
 
 
+    private void ShootTimer()
+    {
+        if (shoot_Timer >= 0)
+        {
+            shoot_Timer -= Time.deltaTime;
+        }
+    }
+
     public void Shoot(InputAction.CallbackContext value)
     {
+        if (shoot_Timer <= 0)
+        {
+            shoot_Timer = 0.4f;
+            return;
+        }
+
         if (canShoot)
         {
             var bumper = (GameObject)Instantiate(BulletTiles1, Firepoint.position, Firepoint.rotation);
@@ -151,8 +166,6 @@ public class test : MonoBehaviour
 
     }
 
-        
-         
             
     public void ChargeShoot(InputAction.CallbackContext value)
     {
