@@ -154,7 +154,7 @@ public class test : MonoBehaviour
     {
         if (shoot_Timer <= 0)
         {
-            shoot_Timer = 0.4f;
+            shoot_Timer = 0.2f;
             return;
         }
 
