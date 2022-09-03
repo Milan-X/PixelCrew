@@ -18,6 +18,7 @@ public class HealthBar : MonoBehaviour
     void Start()
     {
         hp = maxHp;
+        
     }
 
     // Update is called once per frame
@@ -25,6 +26,7 @@ public class HealthBar : MonoBehaviour
     {
         StartCoroutine(UpdateHpCo());
         StartCoroutine(Invulnerability());
+        GameObject.Find("Player (1)").SendMessage("CurrentHp", hp);
     }
 
     IEnumerator UpdateHpCo()
@@ -34,12 +36,13 @@ public class HealthBar : MonoBehaviour
         {
             hpEffect.fillAmount -= hurtSpeed;
             yield return new WaitForSeconds(0.005f);
-            Debug.Log("A");
+            //Debug.Log("A");
         }
         if (hpEffect.fillAmount < hpImage.fillAmount)
         {
             hpEffect.fillAmount = hpImage.fillAmount;
         }
+        
     }
 
     IEnumerator Invulnerability()

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class test : MonoBehaviour
 {
@@ -12,7 +13,9 @@ public class test : MonoBehaviour
 
 
     NewPlayer newPlayer;
-    
+    Rigidbody2D Rb;
+
+    [HideInInspector] public float hp;
     [SerializeField] GameObject player;
   
 
@@ -46,19 +49,19 @@ public class test : MonoBehaviour
         newPlayer = player.GetComponent<NewPlayer>();
         
 
-
-
     }
 
     void Start()
     {
         rend = GetComponent<SpriteRenderer>();
+        Rb = GetComponent<Rigidbody2D>();
         canShoot = true;
     }
 
 
     void Update()
     {
+        
         canStealth = Physics2D.OverlapCircle(StealthCheck.position, .05f, StealthArea);
         ShootTimer();
         if (!canStealth)
@@ -87,12 +90,31 @@ public class test : MonoBehaviour
 
     }
 
+    public void CurrentHp(float hp)
+    {
+        if (hp <= 0)
+        {
+            Die();
+        }
+        
+    }
+
+    private void Die()
+    {
+        //Ìí¼ÓËÀÍö¶¯»­
+        Invoke("RestartLevel", 0.5f);
+    }
+
+    private void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
 
     // Update is called once per frame
     public void Stealth(InputAction.CallbackContext context)
     {
         toStealth = !toStealth;
-        
 
         // TODO
     }
@@ -175,7 +197,6 @@ public class test : MonoBehaviour
             Destroy(bumper, 5f);
         }
  
-        
     }
 
 

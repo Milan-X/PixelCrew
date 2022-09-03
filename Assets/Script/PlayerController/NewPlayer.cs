@@ -241,7 +241,7 @@ public class NewPlayer : MonoBehaviour
     {
         canDash = false;
         isDashing = true;
-
+        Physics2D.IgnoreLayerCollision(10, 11, true); // ÃâÒßÏÝÚåÉËº¦£¬10ÊÇplayerÍ¼²ãµÄÊý×Ö
         float originalGravity = RB.gravityScale;
         RB.gravityScale = 0;
 
@@ -250,6 +250,7 @@ public class NewPlayer : MonoBehaviour
         RB.velocity = new Vector2(DashDir * dashingPower, 0f);
         // dashTrail.emitting = true;
         yield return new WaitForSeconds(dashingTime);
+        Physics2D.IgnoreLayerCollision(10, 11, false);
         isDashing = false;
         RB.gravityScale = originalGravity;
         // dashTrail.emitting = false;
